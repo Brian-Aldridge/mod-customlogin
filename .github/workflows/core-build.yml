@@ -9,22 +9,22 @@ jobs:
       fail-fast: false
       matrix:
         compiler: [clang6, clang9, clang10]
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     name: ${{ matrix.compiler }}
     env:
       COMPILER: ${{ matrix.compiler }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           repository: 'azerothcore/azerothcore-wotlk'
           ref: 'master'
           submodules: 'recursive'
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           submodules: 'recursive'
-          path: 'modules/mod-new-character-perks'
+          path: 'modules/mod_customlogin'
       - name: Cache
-        uses: actions/cache@v1.1.2
+        uses: actions/cache@v4
         with:
           path: /home/runner/.ccache
           key: ccache:${{ matrix.compiler }}:${{ github.ref }}:${{ github.sha }}
@@ -35,11 +35,16 @@ jobs:
         run: source ./apps/ci/ci-install.sh
         env:
           CONTINUOUS_INTEGRATION: true
+        shell: bash
       - name: Import db
         run: source ./apps/ci/ci-import-db.sh
+        shell: bash
       - name: Build
         run: source ./apps/ci/ci-compile.sh
+        shell: bash
       - name: Dry run
         run: source ./apps/ci/ci-worldserver-dry-run.sh
+        shell: bash
       - name: Check startup errors
         run: source ./apps/ci/ci-error-check.sh
+        shell: bash
