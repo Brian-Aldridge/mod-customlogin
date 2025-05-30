@@ -1,8 +1,7 @@
 # ![logo](https://raw.githubusercontent.com/azerothcore/azerothcore.github.io/master/images/logo-github.png) AzerothCore
 ## mod-customlogin
 
-- Latest build status with AzerothCore: [![Build Status](https://github.com/BoiseComputer/mod-custom-login/workflows/core-build/badge.svg?branch=master&event=push)](https://github.com/BoiseComputer/mod-custom-login)
-
+- Latest build status with AzerothCore: [![core-build](https://github.com/BoiseComputer/mod-customlogin/actions/workflows/core-build.yml/badge.svg?branch=master)](https://github.com/BoiseComputer/mod-customlogin/actions/workflows/core-build.yml)
 ---
 
 ### **Description**
