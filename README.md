@@ -88,12 +88,4 @@ All options are controlled via the `mod_customlogin.conf` file located in the `c
 
 ---
 
-### **Next Steps**
-1. Update the [mod_customlogin.conf.dist](http://_vscodecontentref_/3) file with the new configuration options.
-2. Modify the [GiveFirstLoginRewards](http://_vscodecontentref_/4) function in the source code to read item IDs from the configuration file.
-3. Test the module to ensure items are correctly granted based on the configuration.
-4. Update the documentation to reflect the new configuration options.
-
-This approach will make your module more user-friendly and configurable. Let me know if you need further assistance!
-
 **For questions or support, visit the AzerothCore Discord or GitHub discussions.**

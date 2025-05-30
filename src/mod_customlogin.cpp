@@ -109,7 +109,6 @@ private:
       weapon2 = sConfigMgr->GetOption<uint32>("CustomLogin.Warrior.Weapon2", 0);
       weapon3 = sConfigMgr->GetOption<uint32>("CustomLogin.Warrior.Weapon3", 0);
       break;
-
     case CLASS_PALADIN:
       shoulders =
           sConfigMgr->GetOption<uint32>("CustomLogin.Paladin.Shoulders", 0);
@@ -118,7 +117,6 @@ private:
       weapon1 = sConfigMgr->GetOption<uint32>("CustomLogin.Paladin.Weapon1", 0);
       weapon2 = sConfigMgr->GetOption<uint32>("CustomLogin.Paladin.Weapon2", 0);
       break;
-
     case CLASS_HUNTER:
       shoulders =
           sConfigMgr->GetOption<uint32>("CustomLogin.Hunter.Shoulders", 0);
@@ -128,7 +126,6 @@ private:
       weapon2 = sConfigMgr->GetOption<uint32>("CustomLogin.Hunter.Weapon2", 0);
       weapon3 = sConfigMgr->GetOption<uint32>("CustomLogin.Hunter.Weapon3", 0);
       break;
-
     case CLASS_ROGUE:
       shoulders =
           sConfigMgr->GetOption<uint32>("CustomLogin.Rogue.Shoulders", 0);
@@ -137,7 +134,6 @@ private:
       weapon1 = sConfigMgr->GetOption<uint32>("CustomLogin.Rogue.Weapon1", 0);
       weapon2 = sConfigMgr->GetOption<uint32>("CustomLogin.Rogue.Weapon2", 0);
       break;
-
     case CLASS_PRIEST:
       shoulders =
           sConfigMgr->GetOption<uint32>("CustomLogin.Priest.Shoulders", 0);
@@ -145,7 +141,6 @@ private:
       trinket = sConfigMgr->GetOption<uint32>("CustomLogin.Priest.Trinket", 0);
       weapon1 = sConfigMgr->GetOption<uint32>("CustomLogin.Priest.Weapon1", 0);
       break;
-
     case CLASS_DEATH_KNIGHT:
       shoulders =
           sConfigMgr->GetOption<uint32>("CustomLogin.DeathKnight.Shoulders", 0);
@@ -157,7 +152,6 @@ private:
       weapon2 =
           sConfigMgr->GetOption<uint32>("CustomLogin.DeathKnight.Weapon2", 0);
       break;
-
     case CLASS_SHAMAN:
       shoulders =
           sConfigMgr->GetOption<uint32>("CustomLogin.Shaman.Shoulders", 0);
@@ -166,7 +160,6 @@ private:
       weapon1 = sConfigMgr->GetOption<uint32>("CustomLogin.Shaman.Weapon1", 0);
       weapon2 = sConfigMgr->GetOption<uint32>("CustomLogin.Shaman.Weapon2", 0);
       break;
-
     case CLASS_MAGE:
       shoulders =
           sConfigMgr->GetOption<uint32>("CustomLogin.Mage.Shoulders", 0);
@@ -174,7 +167,6 @@ private:
       trinket = sConfigMgr->GetOption<uint32>("CustomLogin.Mage.Trinket", 0);
       weapon1 = sConfigMgr->GetOption<uint32>("CustomLogin.Mage.Weapon1", 0);
       break;
-
     case CLASS_WARLOCK:
       shoulders =
           sConfigMgr->GetOption<uint32>("CustomLogin.Warlock.Shoulders", 0);
@@ -182,7 +174,6 @@ private:
       trinket = sConfigMgr->GetOption<uint32>("CustomLogin.Warlock.Trinket", 0);
       weapon1 = sConfigMgr->GetOption<uint32>("CustomLogin.Warlock.Weapon1", 0);
       break;
-
     case CLASS_DRUID:
       shoulders =
           sConfigMgr->GetOption<uint32>("CustomLogin.Druid.Shoulders", 0);
@@ -191,12 +182,11 @@ private:
       weapon1 = sConfigMgr->GetOption<uint32>("CustomLogin.Druid.Weapon1", 0);
       weapon2 = sConfigMgr->GetOption<uint32>("CustomLogin.Druid.Weapon2", 0);
       break;
-
     default:
       break;
     }
 
-    // Add items to the player's inventory
+    // Add items to the player's inventory if set
     if (shoulders)
       player->AddItem(shoulders, 1);
     if (chest)
