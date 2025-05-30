@@ -1,97 +1,83 @@
-/*
-
-# Custom Login Modifications #
-
-#### A module for AzerothCore by
-[StygianTheBest](https://github.com/StygianTheBest/AzerothCore-Content/tree/master/Modules)
-------------------------------------------------------------------------------------------------------------------
-
-
-### Description ###
-------------------------------------------------------------------------------------------------------------------
-This module performs several actions on new players. It has the option to give
-new players BOA starting gear, additional weapon skills, and special abilities
-such as custom spells. It can also set the reputation of the player to exalted
-with all capital cities for their faction granting them the Ambassador title.
-This is typically done in the core's config file, but it's bugged (as of
-2017.08.23) in AzerothCore. It can also announce when players login or logoff
-the server.
-
-
-### Features ###
-------------------------------------------------------------------------------------------------------------------
-- Player ([ Faction ] - Name - Logon/Logoff message) notification can be
-announced to the world
-- New characters can receive items, bags, and class-specific heirlooms
-- New characters can receive additional weapon skills
-- New characters can receive special abilities
-- New characters can receive exalted rep with capital cities (Title: Ambassador)
-on first login
-
-
-### Data ###
-------------------------------------------------------------------------------------------------------------------
-- Type: Player/Server
-- Script: CustomLogin
-- Config: Yes
-    - Enable Module
-    - Enable Module Announce
-    - Enable Announce Player Login/Logoff
-    - Enable Starting Gear for new players
-    - Enable Additional Weapon Skills for new players
-    - Enable Special Abilities for new players
-    - Enable Reputation Boost for new players
-- SQL: No
-
-
-### Version ###
-------------------------------------------------------------------------------------------------------------------
-- v2017.07.26 - Release
-- v2017.07.29 - Clean up code, Add rep gain, Add config options
-
-
-### Credits ###
-------------------------------------------------------------------------------------------------------------------
-- [Blizzard Entertainment](http://blizzard.com)
-- [TrinityCore](https://github.com/TrinityCore/TrinityCore/blob/3.3.5/THANKS)
-- [SunwellCore](http://www.azerothcore.org/pages/sunwell.pl/)
--
-[AzerothCore](https://github.com/AzerothCore/azerothcore-wotlk/graphs/contributors)
-- [AzerothCore Discord](https://discord.gg/gkt4y2x)
-- [EMUDevs](https://youtube.com/user/EmuDevs)
-- [AC-Web](http://ac-web.org/)
-- [ModCraft.io](http://modcraft.io/)
-- [OwnedCore](http://ownedcore.com/)
-- [OregonCore](https://wiki.oregon-core.net/)
-- [Wowhead.com](http://wowhead.com)
-- [AoWoW](https://wotlk.evowow.com/)
-
-
-### License ###
-------------------------------------------------------------------------------------------------------------------
-- This code and content is released under the [GNU AGPL
-v3](https://github.com/azerothcore/azerothcore-wotlk/blob/master/LICENSE-AGPL3).
-
-*/
-
 #include "Chat.h"
 #include "Config.h"
 #include "GuildMgr.h"
+#include "Log.h"
 #include "Player.h"
 #include "ScriptMgr.h"
 #include "World.h"
 #include "WorldSession.h"
 #include <cstdio>
-typedef std::unordered_map<uint32, WorldSession *> SessionMap;
-extern SessionMap m_sessions;
+
+#define AC_SCRIPT_NAME "mod_customlogin"
 
 class CustomLogin : public PlayerScript {
 
 public:
-  CustomLogin() : PlayerScript("CustomLogin") {}
+  CustomLogin() : PlayerScript("CustomLogin") {
+    LOG_INFO("module",
+             "[mod_customlogin] CustomLogin PlayerScript constructed");
+  }
 
-  void OnFirstLogin(Player *player) {
-    printf("[CustomLogin] OnFirstLogin called for %s\n",
+  void OnPlayerLogin(Player *player) {
+    LOG_INFO("module", "[mod_customlogin] OnPlayerLogin called for %s",
+             player->GetName().c_str());
+
+    bool enable = sConfigMgr->GetOption<bool>("CustomLogin.Enable", true);
+    if (!enable)
+      return;
+
+    const uint32 markerItem = 50255; // Dread Pirate Ring (used as marker)
+    if (!player->HasItemCount(markerItem, 1, false)) {
+      LOG_INFO("module", "[mod_customlogin] Giving first login rewards to %s",
+               player->GetName().c_str());
+      GiveFirstLoginRewards(player);
+    }
+
+    bool announce = sConfigMgr->GetOption<bool>("CustomLogin.Announce", true);
+    bool playerAnnounce =
+        sConfigMgr->GetOption<bool>("CustomLogin.PlayerAnnounce", true);
+
+    if (announce) {
+      ChatHandler(player->GetSession())
+          .SendSysMessage(
+              "This server is running the |cff4CFF00CustomLogin |rmodule.");
+    }
+    if (playerAnnounce) {
+      std::ostringstream ss;
+      if (player->GetTeamId() == TEAM_ALLIANCE) {
+        ss << "|cffFFFFFF[|cff2897FF Alliance |cffFFFFFF]:|cff4CFF00 "
+           << player->GetName() << "|cffFFFFFF has come online.";
+      } else {
+        ss << "|cffFFFFFF[|cffFF0000 Horde |cffFFFFFF]:|cff4CFF00 "
+           << player->GetName() << "|cffFFFFFF has come online.";
+      }
+      ChatHandler(player->GetSession()).SendSysMessage(ss.str().c_str());
+    }
+  }
+
+  void OnPlayerLogout(Player *player) {
+    LOG_INFO("module", "[mod_customlogin] OnPlayerLogout called for %s",
+             player->GetName().c_str());
+    bool enable = sConfigMgr->GetOption<bool>("CustomLogin.Enable", true);
+    bool playerAnnounce =
+        sConfigMgr->GetOption<bool>("CustomLogin.PlayerAnnounce", true);
+
+    if (enable && playerAnnounce) {
+      std::ostringstream ss;
+      if (player->GetTeamId() == TEAM_ALLIANCE) {
+        ss << "|cffFFFFFF[|cff2897FF Alliance |cffFFFFFF]|cff4CFF00 "
+           << player->GetName() << "|cffFFFFFF has left the game.";
+      } else {
+        ss << "|cffFFFFFF[|cffFF0000 Horde |cffFFFFFF]|cff4CFF00 "
+           << player->GetName() << "|cffFFFFFF has left the game.";
+      }
+      ChatHandler(player->GetSession()).SendSysMessage(ss.str().c_str());
+    }
+  }
+
+private:
+  void GiveFirstLoginRewards(Player *player) {
+    printf("[CustomLogin] Giving first login rewards to %s\n",
            player->GetName().c_str());
 
     bool enable = sConfigMgr->GetOption<bool>("CustomLogin.Enable", true);
@@ -502,72 +488,6 @@ public:
       }
     }
   }
-
-  void OnLogin(Player *player) {
-    printf("[CustomLogin] OnLogin called for %s\n", player->GetName().c_str());
-    bool enable = sConfigMgr->GetOption<bool>("CustomLogin.Enable", true);
-    bool announce = sConfigMgr->GetOption<bool>("CustomLogin.Announce", true);
-    bool playerAnnounce =
-        sConfigMgr->GetOption<bool>("CustomLogin.PlayerAnnounce", true);
-    printf("[CustomLogin] Config: Enable=%d, Announce=%d, PlayerAnnounce=%d\n",
-           enable, announce, playerAnnounce);
-
-    if (enable) {
-      if (announce) {
-        printf("[CustomLogin] Announcing module to %s\n",
-               player->GetName().c_str());
-        ChatHandler(player->GetSession())
-            .SendSysMessage(
-                "This server is running the |cff4CFF00CustomLogin |rmodule.");
-      }
-      if (playerAnnounce) {
-        printf("[CustomLogin] Announcing player login: %s\n",
-               player->GetName().c_str());
-        std::ostringstream ss;
-        if (player->GetTeamId() == TEAM_ALLIANCE) {
-          ss << "|cffFFFFFF[|cff2897FF Alliance |cffFFFFFF]:|cff4CFF00 "
-             << player->GetName() << "|cffFFFFFF has come online.";
-        } else {
-          ss << "|cffFFFFFF[|cffFF0000 Horde |cffFFFFFF]:|cff4CFF00 "
-             << player->GetName() << "|cffFFFFFF has come online.";
-        }
-        for (auto const &sessionPair : m_sessions) {
-          if (Player *plr = sessionPair.second->GetPlayer()) {
-            ChatHandler(plr->GetSession()).SendSysMessage(ss.str().c_str());
-          }
-        }
-      }
-    }
-  }
-
-  void OnLogout(Player *player) {
-    printf("[CustomLogin] OnLogout called for %s\n", player->GetName().c_str());
-    bool enable = sConfigMgr->GetOption<bool>("CustomLogin.Enable", true);
-    bool playerAnnounce =
-        sConfigMgr->GetOption<bool>("CustomLogin.PlayerAnnounce", true);
-    printf("[CustomLogin] Config: Enable=%d, PlayerAnnounce=%d\n", enable,
-           playerAnnounce);
-
-    if (enable) {
-      if (playerAnnounce) {
-        printf("[CustomLogin] Announcing player logout: %s\n",
-               player->GetName().c_str());
-        std::ostringstream ss;
-        if (player->GetTeamId() == TEAM_ALLIANCE) {
-          ss << "|cffFFFFFF[|cff2897FF Alliance |cffFFFFFF]|cff4CFF00 "
-             << player->GetName() << "|cffFFFFFF has left the game.";
-        } else {
-          ss << "|cffFFFFFF[|cffFF0000 Horde |cffFFFFFF]|cff4CFF00 "
-             << player->GetName() << "|cffFFFFFF has left the game.";
-        }
-        for (auto const &sessionPair : m_sessions) {
-          if (Player *plr = sessionPair.second->GetPlayer()) {
-            ChatHandler(plr->GetSession()).SendSysMessage(ss.str().c_str());
-          }
-        }
-      }
-    }
-  }
 };
 
-void AddCustomLoginScripts() { new CustomLogin(); }
+void AddSC_mod_customlogin() { new CustomLogin(); };
