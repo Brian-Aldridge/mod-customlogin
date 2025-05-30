@@ -19,7 +19,7 @@ public:
   }
 
   void OnPlayerLogin(Player *player) {
-    LOG_INFO("module", "[mod_customlogin] OnPlayerLogin called for %s",
+    LOG_INFO("module", "[mod_customlogin] OnPlayerLogin called for {}",
              player->GetName().c_str());
 
     bool enable = sConfigMgr->GetOption<bool>("CustomLogin.Enable", true);
@@ -28,7 +28,7 @@ public:
 
     const uint32 markerItem = 50255; // Dread Pirate Ring (used as marker)
     if (!player->HasItemCount(markerItem, 1, false)) {
-      LOG_INFO("module", "[mod_customlogin] Giving first login rewards to %s",
+      LOG_INFO("module", "[mod_customlogin] Giving first login rewards to {}",
                player->GetName().c_str());
       GiveFirstLoginRewards(player);
     }
@@ -56,7 +56,7 @@ public:
   }
 
   void OnPlayerLogout(Player *player) {
-    LOG_INFO("module", "[mod_customlogin] OnPlayerLogout called for %s",
+    LOG_INFO("module", "[mod_customlogin] OnPlayerLogout called for {}",
              player->GetName().c_str());
     bool enable = sConfigMgr->GetOption<bool>("CustomLogin.Enable", true);
     bool playerAnnounce =
