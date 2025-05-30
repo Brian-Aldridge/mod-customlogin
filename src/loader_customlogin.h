@@ -1,1 +1,1 @@
-void AddCustomLoginScripts();
+void Addmod_customloginScripts();
