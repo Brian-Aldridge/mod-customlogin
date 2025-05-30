@@ -23,6 +23,11 @@ jobs:
         with:
           submodules: 'recursive'
           path: 'modules/mod_customlogin'
+      - name: Install Boost Libraries
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libboost-all-dev
+        shell: bash
       - name: Set compiler environment variables
         run: |
           echo "CC=gcc" >> $GITHUB_ENV
