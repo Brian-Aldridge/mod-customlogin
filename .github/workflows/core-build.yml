@@ -8,7 +8,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        compiler: [clang-14]
+        compiler: [gcc]
     runs-on: ubuntu-latest
     name: ${{ matrix.compiler }}
     env:
@@ -23,15 +23,10 @@ jobs:
         with:
           submodules: 'recursive'
           path: 'modules/mod_customlogin'
-      - name: Install clang-14
+      - name: Set compiler environment variables
         run: |
-          sudo apt-get update
-          sudo apt-get install -y wget software-properties-common
-          wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
-          sudo add-apt-repository "deb http://apt.llvm.org/focal/ llvm-toolchain-focal-14 main"
-          sudo apt-get update
-          sudo apt-get install -y clang-14
-          clang-14 --version  # Verify that clang-14 is installed
+          echo "CC=gcc" >> $GITHUB_ENV
+          echo "CXX=g++" >> $GITHUB_ENV
       - name: Cache
         uses: actions/cache@v4
         with:
@@ -49,7 +44,11 @@ jobs:
         run: source ./apps/ci/ci-import-db.sh
         shell: bash
       - name: Build
-        run: source ./apps/ci/ci-compile.sh
+        run: |
+          mkdir build
+          cd build
+          cmake .. -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX
+          make -j$(nproc)
         shell: bash
       - name: Dry run
         run: source ./apps/ci/ci-worldserver-dry-run.sh
@@ -57,7 +56,3 @@ jobs:
       - name: Check startup errors
         run: source ./apps/ci/ci-error-check.sh
         shell: bash
-      - name: Set compiler environment variables
-        run: |
-          echo "CC=clang-14" >> $GITHUB_ENV
-          echo "CXX=clang++-14" >> $GITHUB_ENV
