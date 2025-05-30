@@ -29,15 +29,26 @@ CustomLogin.SpecialAbility = 1
 # New characters start with Exalted reputation for main city factions? (1: true | 0: false)
 CustomLogin.Reputation = 1
 
+# Item ID used as a marker to check if first login rewards have been given
+CustomLogin.MarkerItem = 50255
+
 ###################################################################################################
 #   SPECIAL ABILITIES CONFIGURATION
 ###################################################################################################
 
 # Define special abilities granted to new characters (set to 0 to disable)
-CustomLogin.SpecialAbility.Spell1 = 12345  # Example spell ID
-CustomLogin.SpecialAbility.Spell2 = 67890  # Example spell ID
-CustomLogin.SpecialAbility.Title = 1       # Example title ID
-CustomLogin.SpecialAbility.Mount = 60025  # Example mount spell ID
+
+# Example spell ID
+CustomLogin.SpecialAbility.Spell1 = 12345
+
+# Example spell ID
+CustomLogin.SpecialAbility.Spell2 = 67890
+
+# Example title ID
+CustomLogin.SpecialAbility.Title = 1
+
+# Example mount spell ID
+CustomLogin.SpecialAbility.Mount = 60025
 
 ###################################################################################################
 #   ITEM CONFIGURATION PER CLASS
@@ -118,9 +129,6 @@ CustomLogin.Druid.Weapon2 = 44092
 #   REPUTATION CONFIGURATION
 ###################################################################################################
 
-# New characters start with custom reputation levels? (1: true | 0: false)
-CustomLogin.Reputation = 1
-
 # Define reputation levels for each faction (set to 0 to disable)
 # Reputation levels: 0 = Neutral, 3000 = Friendly, 9000 = Honored, 21000 = Revered, 42000 = Exalted
 
@@ -168,3 +176,9 @@ CustomLogin.Reputation.HordeExpedition = 42000
 CustomLogin.Reputation.AllianceVanguard = 42000
 CustomLogin.Reputation.TheSonsOfHodir = 42000
 CustomLogin.Reputation.TheAshenVerdict = 42000
+
+# Custom message shown to players on login (leave blank for default)
+CustomLogin.AnnounceMessage = This server is running the |cff4CFF00CustomLogin |rmodule.
+
+# Enable debug logging for mod-customlogin (1: true | 0: false)
+CustomLogin.Debug = 0

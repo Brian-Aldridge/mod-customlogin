@@ -14,23 +14,29 @@ class CustomLogin : public PlayerScript {
 
 public:
   CustomLogin() : PlayerScript("CustomLogin") {
-    LOG_INFO("module",
-             "[mod_customlogin] CustomLogin PlayerScript constructed");
+    if (sConfigMgr->GetOption<bool>("CustomLogin.Debug", false)) {
+      LOG_INFO("module",
+               "[mod_customlogin] CustomLogin PlayerScript constructed");
+    }
   }
 
   void OnPlayerLogin(Player *player) {
-    LOG_INFO("module", "[mod_customlogin] OnPlayerLogin called for {}",
-             player->GetName().c_str());
+    bool debug = sConfigMgr->GetOption<bool>("CustomLogin.Debug", false);
+    if (debug)
+      LOG_INFO("module", "[mod_customlogin] OnPlayerLogin called for {}",
+               player->GetName().c_str());
 
     bool enable = sConfigMgr->GetOption<bool>("CustomLogin.Enable", true);
     if (!enable)
       return;
 
-    const uint32 markerItem = 50255; // Dread Pirate Ring (used as marker)
+    const uint32 markerItem =
+        sConfigMgr->GetOption<uint32>("CustomLogin.MarkerItem", 50255);
     if (!player->HasItemCount(markerItem, 1, false)) {
-      LOG_INFO("module", "[mod_customlogin] Giving first login rewards to {}",
-               player->GetName().c_str());
-      GiveFirstLoginRewards(player);
+      if (debug)
+        LOG_INFO("module", "[mod_customlogin] Giving first login rewards to {}",
+                 player->GetName().c_str());
+      GiveFirstLoginRewards(player, debug);
     }
 
     bool announce = sConfigMgr->GetOption<bool>("CustomLogin.Announce", true);
@@ -38,9 +44,10 @@ public:
         sConfigMgr->GetOption<bool>("CustomLogin.PlayerAnnounce", true);
 
     if (announce) {
-      ChatHandler(player->GetSession())
-          .SendSysMessage(
-              "This server is running the |cff4CFF00CustomLogin |rmodule.");
+      std::string announceMsg = sConfigMgr->GetOption<std::string>(
+          "CustomLogin.AnnounceMessage",
+          "This server is running the |cff4CFF00CustomLogin |rmodule.");
+      ChatHandler(player->GetSession()).SendSysMessage(announceMsg.c_str());
     }
     if (playerAnnounce) {
       std::ostringstream ss;
@@ -56,8 +63,10 @@ public:
   }
 
   void OnPlayerLogout(Player *player) {
-    LOG_INFO("module", "[mod_customlogin] OnPlayerLogout called for {}",
-             player->GetName().c_str());
+    bool debug = sConfigMgr->GetOption<bool>("CustomLogin.Debug", false);
+    if (debug)
+      LOG_INFO("module", "[mod_customlogin] OnPlayerLogout called for {}",
+               player->GetName().c_str());
     bool enable = sConfigMgr->GetOption<bool>("CustomLogin.Enable", true);
     bool playerAnnounce =
         sConfigMgr->GetOption<bool>("CustomLogin.PlayerAnnounce", true);
@@ -76,9 +85,10 @@ public:
   }
 
 private:
-  void GiveFirstLoginRewards(Player *player) {
-    printf("[CustomLogin] Giving first login rewards to %s\n",
-           player->GetName().c_str());
+  void GiveFirstLoginRewards(Player *player, bool debug) {
+    if (debug)
+      printf("[CustomLogin] Giving first login rewards to %s\n",
+             player->GetName().c_str());
 
     bool boa = sConfigMgr->GetOption<bool>("CustomLogin.BoA", true);
     if (!boa)
@@ -217,19 +227,67 @@ private:
           sConfigMgr->GetOption<uint32>("CustomLogin.SpecialAbility.Mount", 0);
 
       if (spell1)
-        player->LearnSpell(spell1, false);
+        player->learnSpell(spell1, false);
       if (spell2)
-        player->LearnSpell(spell2, false);
-      if (title)
-        player->SetTitle(title);
+        player->learnSpell(spell2, false);
+      if (title) {
+        if (CharTitlesEntry const *titleEntry =
+                sCharTitlesStore.LookupEntry(title)) {
+          player->SetTitle(titleEntry);
+        }
+      }
       if (mount)
-        player->LearnSpell(mount, false);
+        player->learnSpell(mount, false);
     }
 
     if (sConfigMgr->GetOption<bool>("CustomLogin.Reputation", true)) {
-      player->SetReputation(72, 42000); // Stormwind
-      player->SetReputation(76, 42000); // Orgrimmar
-      // Add other factions as needed
+      std::map<uint32, std::string> reputations = {
+          {72, "CustomLogin.Reputation.Stormwind"},
+          {76, "CustomLogin.Reputation.Orgrimmar"},
+          {69, "CustomLogin.Reputation.Darnassus"},
+          {81, "CustomLogin.Reputation.ThunderBluff"},
+          {54, "CustomLogin.Reputation.Gnomeregan"},
+          {47, "CustomLogin.Reputation.Ironforge"},
+          {530, "CustomLogin.Reputation.DarkspearTrolls"},
+          {68, "CustomLogin.Reputation.Undercity"},
+          {930, "CustomLogin.Reputation.Exodar"},
+          {911, "CustomLogin.Reputation.Silvermoon"},
+          {529, "CustomLogin.Reputation.ArgentDawn"},
+          {609, "CustomLogin.Reputation.CenarionCircle"},
+          {576, "CustomLogin.Reputation.TimbermawHold"},
+          {270, "CustomLogin.Reputation.ZandalarTribe"},
+          {87, "CustomLogin.Reputation.BloodsailBuccaneers"},
+          {21, "CustomLogin.Reputation.SteamwheedleCartel"},
+          {935, "CustomLogin.Reputation.ShaTar"},
+          {1011, "CustomLogin.Reputation.LowerCity"},
+          {942, "CustomLogin.Reputation.CenarionExpedition"},
+          {932, "CustomLogin.Reputation.TheAldor"},
+          {934, "CustomLogin.Reputation.TheScryers"},
+          {933, "CustomLogin.Reputation.TheConsortium"},
+          {941, "CustomLogin.Reputation.TheMaghar"},
+          {978, "CustomLogin.Reputation.Kurenai"},
+          {970, "CustomLogin.Reputation.Sporeggar"},
+          {1015, "CustomLogin.Reputation.Netherwing"},
+          {1106, "CustomLogin.Reputation.ArgentCrusade"},
+          {1104, "CustomLogin.Reputation.FrenzyheartTribe"},
+          {1105, "CustomLogin.Reputation.TheOracles"},
+          {1090, "CustomLogin.Reputation.KirinTor"},
+          {1091, "CustomLogin.Reputation.TheWyrmrestAccord"},
+          {1052, "CustomLogin.Reputation.HordeExpedition"},
+          {1037, "CustomLogin.Reputation.AllianceVanguard"},
+          {1119, "CustomLogin.Reputation.TheSonsOfHodir"},
+          {1156, "CustomLogin.Reputation.TheAshenVerdict"}};
+
+      for (const auto &[factionId, configKey] : reputations) {
+        uint32 reputationValue = sConfigMgr->GetOption<uint32>(configKey, 0);
+        if (reputationValue > 0) {
+          player->SetReputation(factionId, reputationValue);
+          if (debug)
+            LOG_INFO("module",
+                     "[CustomLogin] Setting reputation for faction {} to {}",
+                     factionId, reputationValue);
+        }
+      }
     }
   }
 };
