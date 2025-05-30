@@ -1,63 +1,12 @@
 name: core-build
 on:
   push:
+    branches:
+      - 'master'
   pull_request:
 
 jobs:
   build:
-    strategy:
-      fail-fast: false
-      matrix:
-        compiler: [gcc]
-    runs-on: ubuntu-latest
-    name: ${{ matrix.compiler }}
-    env:
-      COMPILER: ${{ matrix.compiler }}
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          repository: 'azerothcore/azerothcore-wotlk'
-          ref: 'master'
-          submodules: 'recursive'
-      - uses: actions/checkout@v4
-        with:
-          submodules: 'recursive'
-          path: 'modules/mod_customlogin'
-      - name: Cache Boost
-        uses: actions/cache@v4
-        with:
-          path: /usr/local/include/boost
-          key: boost:${{ github.sha }}
-          restore-keys: boost
-      - name: Install Boost 1.74.0
-        run: |
-          sudo apt-get update
-          sudo apt-get remove -y libboost-all-dev
-          wget https://versaweb.dl.sourceforge.net/project/boost/boost/1.74.0/boost_1_74_0.tar.bz2
-          tar -xvjf boost_1_74_0.tar.bz2
-          cd boost_1_74_0
-          ./bootstrap.sh
-          sudo ./b2 install
-        shell: bash
-      - name: Verify Boost Installation
-        run: |
-          ls /usr/local/include/boost
-          echo "Boost version installed: $(grep BOOST_LIB_VERSION /usr/local/include/boost/version.hpp)"
-        shell: bash
-      - name: Set compiler environment variables
-        run: |
-          echo "CC=gcc" >> $GITHUB_ENV
-          echo "CXX=g++" >> $GITHUB_ENV
-      - name: Build
-        run: |
-          mkdir build
-          cd build
-          cmake .. -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX -DBOOST_ROOT=/usr/local
-          make -j$(nproc)
-        shell: bash
-      - name: Dry run
-        run: source ./apps/ci/ci-worldserver-dry-run.sh
-        shell: bash
-      - name: Check startup errors
-        run: source ./apps/ci/ci-error-check.sh
-        shell: bash
+    uses: azerothcore/reusable-workflows/.github/workflows/core_build_modules.yml@main
+    with:
+      module_repo: ${{ github.event.repository.name }}
