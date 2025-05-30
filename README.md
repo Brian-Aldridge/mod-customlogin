@@ -80,7 +80,7 @@ All options are controlled via the `mod_customlogin.conf` file located in the `c
 
 1. Clone or copy this module into your `modules` directory:
    ```bash
-   git clone https://github.com/BoiseComputer/mod-custom-login.git modules/mod-customlogin
+   git clone https://github.com/BoiseComputer/mod-customlogin.git modules/mod-customlogin
    ```
 2. Add the config file to your `configs` directory.
 3. Rebuild your AzerothCore server.
