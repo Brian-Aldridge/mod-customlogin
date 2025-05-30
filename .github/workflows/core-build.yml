@@ -23,6 +23,8 @@ jobs:
         with:
           submodules: 'recursive'
           path: 'modules/mod_customlogin'
+      - name: Install clang-14
+        run: sudo apt-get update && sudo apt-get install -y clang-14
       - name: Cache
         uses: actions/cache@v4
         with:
@@ -48,8 +50,6 @@ jobs:
       - name: Check startup errors
         run: source ./apps/ci/ci-error-check.sh
         shell: bash
-      - name: Install clang-14
-        run: sudo apt-get update && sudo apt-get install -y clang-14
       - name: Set compiler environment variables
         run: |
           echo "CC=clang-14" >> $GITHUB_ENV
