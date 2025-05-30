@@ -40,9 +40,6 @@ jobs:
         env:
           CONTINUOUS_INTEGRATION: true
         shell: bash
-      - name: Import db
-        run: source ./apps/ci/ci-import-db.sh
-        shell: bash
       - name: Build
         run: |
           mkdir build
