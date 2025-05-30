@@ -1,33 +1,170 @@
 [worldserver]
 
 ###################################################################################################
-#   CUSTOM LOGIN
+#   CUSTOM LOGIN MODULE CONFIGURATION
 ###################################################################################################
 
 # Enable the module? (1: true | 0: false)
-
 CustomLogin.Enable = 1
 
-# Announce the module when the player logs in?
-
+# Announce the module when the player logs in? (1: true | 0: false)
 CustomLogin.Announce = 1
 
-# Inform when players enter and exit the game
-
+# Inform when players enter and exit the game? (1: true | 0: false)
 CustomLogin.PlayerAnnounce = 1
 
-# New characters start with BoA items? (1: true | 0: false)
+###################################################################################################
+#   FIRST LOGIN REWARDS
+###################################################################################################
 
+# New characters start with BoA items? (1: true | 0: false)
 CustomLogin.BoA = 1
 
 # New characters start with additional weapon skills? (1: true | 0: false)
-
 CustomLogin.Skills = 1
 
 # New characters start with special abilities? (1: true | 0: false)
-
 CustomLogin.SpecialAbility = 1
 
 # New characters start with Exalted reputation for main city factions? (1: true | 0: false)
-
 CustomLogin.Reputation = 1
+
+###################################################################################################
+#   SPECIAL ABILITIES CONFIGURATION
+###################################################################################################
+
+# Define special abilities granted to new characters (set to 0 to disable)
+CustomLogin.SpecialAbility.Spell1 = 12345  # Example spell ID
+CustomLogin.SpecialAbility.Spell2 = 67890  # Example spell ID
+CustomLogin.SpecialAbility.Title = 1       # Example title ID
+CustomLogin.SpecialAbility.Mount = 60025  # Example mount spell ID
+
+###################################################################################################
+#   ITEM CONFIGURATION PER CLASS
+###################################################################################################
+
+# Define items for each class (set to 0 if no item should be given)
+
+# Warrior
+CustomLogin.Warrior.Shoulders = 42949
+CustomLogin.Warrior.Chest = 48685
+CustomLogin.Warrior.Trinket = 42991
+CustomLogin.Warrior.Weapon1 = 42943
+CustomLogin.Warrior.Weapon2 = 44092
+CustomLogin.Warrior.Weapon3 = 44093
+
+# Paladin
+CustomLogin.Paladin.Shoulders = 42949
+CustomLogin.Paladin.Chest = 48685
+CustomLogin.Paladin.Trinket = 42991
+CustomLogin.Paladin.Weapon1 = 42945
+CustomLogin.Paladin.Weapon2 = 44092
+
+# Hunter
+CustomLogin.Hunter.Shoulders = 42950
+CustomLogin.Hunter.Chest = 48677
+CustomLogin.Hunter.Trinket = 42991
+CustomLogin.Hunter.Weapon1 = 42943
+CustomLogin.Hunter.Weapon2 = 42946
+CustomLogin.Hunter.Weapon3 = 44093
+
+# Rogue
+CustomLogin.Rogue.Shoulders = 42952
+CustomLogin.Rogue.Chest = 48689
+CustomLogin.Rogue.Trinket = 42991
+CustomLogin.Rogue.Weapon1 = 42944
+CustomLogin.Rogue.Weapon2 = 42945
+
+# Priest
+CustomLogin.Priest.Shoulders = 42985
+CustomLogin.Priest.Chest = 48691
+CustomLogin.Priest.Trinket = 42992
+CustomLogin.Priest.Weapon1 = 42947
+
+# Death Knight
+CustomLogin.DeathKnight.Shoulders = 42949
+CustomLogin.DeathKnight.Chest = 48685
+CustomLogin.DeathKnight.Trinket = 42991
+CustomLogin.DeathKnight.Weapon1 = 42943
+CustomLogin.DeathKnight.Weapon2 = 44092
+
+# Shaman
+CustomLogin.Shaman.Shoulders = 42951
+CustomLogin.Shaman.Chest = 48683
+CustomLogin.Shaman.Trinket = 42991
+CustomLogin.Shaman.Weapon1 = 42945
+CustomLogin.Shaman.Weapon2 = 44092
+
+# Mage
+CustomLogin.Mage.Shoulders = 42985
+CustomLogin.Mage.Chest = 48691
+CustomLogin.Mage.Trinket = 42992
+CustomLogin.Mage.Weapon1 = 42947
+
+# Warlock
+CustomLogin.Warlock.Shoulders = 42985
+CustomLogin.Warlock.Chest = 48691
+CustomLogin.Warlock.Trinket = 42992
+CustomLogin.Warlock.Weapon1 = 42947
+
+# Druid
+CustomLogin.Druid.Shoulders = 42952
+CustomLogin.Druid.Chest = 48689
+CustomLogin.Druid.Trinket = 42991
+CustomLogin.Druid.Weapon1 = 42944
+CustomLogin.Druid.Weapon2 = 44092
+
+###################################################################################################
+#   REPUTATION CONFIGURATION
+###################################################################################################
+
+# New characters start with custom reputation levels? (1: true | 0: false)
+CustomLogin.Reputation = 1
+
+# Define reputation levels for each faction (set to 0 to disable)
+# Reputation levels: 0 = Neutral, 3000 = Friendly, 9000 = Honored, 21000 = Revered, 42000 = Exalted
+
+# Alliance Factions
+CustomLogin.Reputation.Stormwind = 42000
+CustomLogin.Reputation.Ironforge = 42000
+CustomLogin.Reputation.Darnassus = 42000
+CustomLogin.Reputation.Exodar = 42000
+CustomLogin.Reputation.Gnomeregan = 42000
+
+# Horde Factions
+CustomLogin.Reputation.Orgrimmar = 42000
+CustomLogin.Reputation.ThunderBluff = 42000
+CustomLogin.Reputation.Undercity = 42000
+CustomLogin.Reputation.Silvermoon = 42000
+CustomLogin.Reputation.DarkspearTrolls = 42000
+
+# Neutral Factions
+CustomLogin.Reputation.ArgentDawn = 42000
+CustomLogin.Reputation.CenarionCircle = 42000
+CustomLogin.Reputation.TimbermawHold = 42000
+CustomLogin.Reputation.ZandalarTribe = 42000
+CustomLogin.Reputation.BloodsailBuccaneers = 0
+CustomLogin.Reputation.SteamwheedleCartel = 42000
+
+# Burning Crusade Factions
+CustomLogin.Reputation.ShaTar = 42000
+CustomLogin.Reputation.LowerCity = 42000
+CustomLogin.Reputation.CenarionExpedition = 42000
+CustomLogin.Reputation.TheAldor = 42000
+CustomLogin.Reputation.TheScryers = 42000
+CustomLogin.Reputation.TheConsortium = 42000
+CustomLogin.Reputation.TheMaghar = 42000
+CustomLogin.Reputation.Kurenai = 42000
+CustomLogin.Reputation.Sporeggar = 42000
+CustomLogin.Reputation.Netherwing = 42000
+
+# Wrath of the Lich King Factions
+CustomLogin.Reputation.ArgentCrusade = 42000
+CustomLogin.Reputation.FrenzyheartTribe = 0
+CustomLogin.Reputation.TheOracles = 42000
+CustomLogin.Reputation.KirinTor = 42000
+CustomLogin.Reputation.TheWyrmrestAccord = 42000
+CustomLogin.Reputation.HordeExpedition = 42000
+CustomLogin.Reputation.AllianceVanguard = 42000
+CustomLogin.Reputation.TheSonsOfHodir = 42000
+CustomLogin.Reputation.TheAshenVerdict = 42000

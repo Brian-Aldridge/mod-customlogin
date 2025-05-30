@@ -1,59 +1,100 @@
 # ![logo](https://raw.githubusercontent.com/azerothcore/azerothcore.github.io/master/images/logo-github.png) AzerothCore
 ## mod-customlogin
 
-- Latest build status with AzerothCore: [![Build Status](https://github.com/azerothcore/mod-customlogin/workflows/core-build/badge.svg?branch=master&event=push)](https://github.com/azerothcore/mod-customlogin)
+- Latest build status with AzerothCore: [![Build Status](https://github.com/BoiseComputer/mod-custom-login/workflows/core-build/badge.svg?branch=master&event=push)](https://github.com/BoiseComputer/mod-custom-login)
 
-### Description
+---
 
-This module provides custom login rewards and announcements for new characters on your AzerothCore server.  
-It is compatible with Playerbot and other forks that do not expose public session accessors.
+### **Description**
 
-**Key features:**
-- Announces to the logging-in or logging-out player (not globally) when they enter or leave the world.
-- Optionally gives new characters Bind-on-Account (BoA) starting gear (heirlooms and trinkets).
-- Optionally grants additional weapon skills based on class.
-- Optionally grants special abilities and custom spells.
-- Optionally sets the reputation of the player to exalted with all capital cities for their faction, granting the Ambassador title (useful if the core config for rep is bugged).
-- All features are configurable via `mod_customlogin.conf`.
+`mod-customlogin` is a highly configurable module for AzerothCore that provides custom login rewards, announcements, and features for new characters. It allows server administrators to customize items, abilities, reputations, and more through a configuration file without modifying the source code.
 
-### Features
-------------------------------------------------------------------------------------------------------------------
-- **Login/Logout Announcements:**  
-  The player receives a custom message when they log in or out.
-- **First Login Rewards:**  
-  New characters can receive class-appropriate heirlooms, trinkets, and bags.
-- **Additional Weapon Skills:**  
-  New characters can receive extra weapon skills based on their class.
-- **Special Abilities:**  
-  New characters can receive special spells or abilities.
-- **Exalted Reputation:**  
-  New characters can start with exalted reputation for their faction's capital cities (Ambassador title).
+This module is compatible with Playerbot and other forks that do not expose public session accessors.
 
-### Configuration
+---
 
-All options are controlled via `mod_customlogin.conf`:
+### **Features**
 
+#### **1. Login/Logout Announcements**
+- Sends a custom message to the logging-in or logging-out player (not globally).
+- Configurable via `CustomLogin.PlayerAnnounce`.
+
+#### **2. First Login Rewards**
+- Grants Bind-on-Account (BoA) starting gear (heirlooms, trinkets, and weapons) to new characters.
+- Items are class-specific and fully configurable via the `.conf` file.
+
+#### **3. Additional Weapon Skills**
+- Grants additional weapon skills to new characters based on their class.
+- Configurable via `CustomLogin.Skills`.
+
+#### **4. Special Abilities**
+- Grants special abilities, spells, titles, and mounts to new characters.
+- Fully configurable via the `.conf` file.
+
+#### **5. Reputation Configuration**
+- Sets custom reputation levels for new characters with various factions.
+- Supports all major factions, including Alliance, Horde, Neutral, Burning Crusade, and Wrath of the Lich King factions.
+- Reputation levels are configurable (e.g., Neutral, Friendly, Honored, Revered, Exalted).
+
+#### **6. Fully Configurable**
+- All features are controlled via the `mod_customlogin.conf` file.
+- No need to modify the source code to adjust items, abilities, or reputations.
+
+---
+
+### **Configuration**
+
+All options are controlled via the `mod_customlogin.conf` file located in the `configs` directory. Below is a summary of the available options:
+
+#### **General Settings**
 - `CustomLogin.Enable` — Enable or disable the module.
 - `CustomLogin.Announce` — Announce the module to the player on login.
 - `CustomLogin.PlayerAnnounce` — Send a login/logout message to the player.
+
+#### **First Login Rewards**
 - `CustomLogin.BoA` — Give new characters BoA items.
 - `CustomLogin.Skills` — Give new characters additional weapon skills.
-- `CustomLogin.SpecialAbility` — Give new characters special abilities.
-- `CustomLogin.Reputation` — Set new characters to exalted with their faction's capital cities.
 
-### Notes
+#### **Special Abilities**
+- `CustomLogin.SpecialAbility` — Enable or disable special abilities.
+- `CustomLogin.SpecialAbility.Spell1` — Spell ID for the first custom spell.
+- `CustomLogin.SpecialAbility.Spell2` — Spell ID for the second custom spell.
+- `CustomLogin.SpecialAbility.Title` — Title ID for the custom title.
+- `CustomLogin.SpecialAbility.Mount` — Spell ID for the custom mount.
 
-- **This module only sends announcements to the logging-in/logging-out player, not globally to all players.**  
-  This ensures compatibility with all AzerothCore forks, including those without public session accessors.
-- Place your configuration file in the `configs` directory and ensure it is named `mod_customlogin.conf`.
+#### **Reputation Configuration**
+- `CustomLogin.Reputation` — Enable or disable reputation configuration.
+- Reputation levels are defined for each faction. Example:
+  - `CustomLogin.Reputation.Stormwind = 42000` (Exalted)
+  - `CustomLogin.Reputation.Orgrimmar = 42000` (Exalted)
+  - `CustomLogin.Reputation.ArgentDawn = 9000` (Honored)
 
-### Installation
+#### **Item Configuration**
+- Items are defined per class. Example:
+  - `CustomLogin.Warrior.Shoulders = 42949`
+  - `CustomLogin.Paladin.Chest = 48685`
+  - `CustomLogin.Hunter.Weapon1 = 42943`
 
-1. Clone or copy this module into your `modules` directory.
+---
+
+### **Installation**
+
+1. Clone or copy this module into your `modules` directory:
+   ```bash
+   git clone https://github.com/BoiseComputer/mod-custom-login.git modules/mod-customlogin
+   ```
 2. Add the config file to your `configs` directory.
 3. Rebuild your AzerothCore server.
 4. Restart your worldserver.
 
 ---
+
+### **Next Steps**
+1. Update the [mod_customlogin.conf.dist](http://_vscodecontentref_/3) file with the new configuration options.
+2. Modify the [GiveFirstLoginRewards](http://_vscodecontentref_/4) function in the source code to read item IDs from the configuration file.
+3. Test the module to ensure items are correctly granted based on the configuration.
+4. Update the documentation to reflect the new configuration options.
+
+This approach will make your module more user-friendly and configurable. Let me know if you need further assistance!
 
 **For questions or support, visit the AzerothCore Discord or GitHub discussions.**
