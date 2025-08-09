@@ -4,7 +4,7 @@
 
 ## mod-customlogin
 
-- Latest build status with AzerothCore: [![core-build](https://github.com/BoiseComputer/mod-customlogin/actions/workflows/core-build.yml/badge.svg?branch=master)](https://github.com/BoiseComputer/mod-customlogin/actions/workflows/core-build.yml)
+- Latest build status with AzerothCore: [![core-build](https://github.com/Brian-Aldridge/mod-customlogin/actions/workflows/core-build.yml/badge.svg?branch=master)](https://github.com/Brian-Aldridge/mod-customlogin/actions/workflows/core-build.yml)
 
 ---
 
@@ -95,7 +95,7 @@ All options are controlled via the `mod_customlogin.conf` file located in the `c
 
 1. Clone or copy this module into your `modules` directory:
    ```bash
-   git clone https://github.com/BoiseComputer/mod-customlogin.git modules/mod-customlogin
+   git clone https://github.com/Brian-Aldridge/mod-customlogin.git modules/mod-customlogin
    ```
 2. Add the config file to your `configs` directory.
 3. Rebuild your AzerothCore server.
