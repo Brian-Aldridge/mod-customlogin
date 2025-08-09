@@ -29,8 +29,6 @@ CustomLogin.SpecialAbility = 1
 # New characters start with Exalted reputation for main city factions? (1: true | 0: false)
 CustomLogin.Reputation = 1
 
-# Item ID used as a marker to check if first login rewards have been given
-CustomLogin.MarkerItem = 50255
 
 ###################################################################################################
 #   SPECIAL ABILITIES CONFIGURATION

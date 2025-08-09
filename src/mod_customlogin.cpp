@@ -30,11 +30,10 @@ public:
     if (!enable)
       return;
 
-    const uint32 markerItem =
-        sConfigMgr->GetOption<uint32>("CustomLogin.MarkerItem", 50255);
-    if (!player->HasItemCount(markerItem, 1, false)) {
+    // Use total played time to detect first login
+    if (player->GetTotalPlayedTime() == 0) {
       if (debug)
-        LOG_INFO("module", "[mod_customlogin] Giving first login rewards to {}",
+        LOG_INFO("module", "[mod_customlogin] First login detected for {}",
                  player->GetName().c_str());
       GiveFirstLoginRewards(player, debug);
     }
@@ -94,11 +93,11 @@ private:
     if (!boa)
       return;
 
-    // Define item variables
-    uint32 shoulders = 0, chest = 0, trinket = 0, weapon1 = 0, weapon2 = 0,
-           weapon3 = 0;
+  // Define item variables
+  uint32 shoulders = 0, chest = 0, trinket = 0, weapon1 = 0, weapon2 = 0,
+       weapon3 = 0;
 
-    // Read items from the config file based on the player's class
+  // Read items from the config file based on the player's class
     switch (player->getClass()) {
     case CLASS_WARRIOR:
       shoulders =
