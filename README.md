@@ -66,6 +66,49 @@ All options are controlled via the `mod_customlogin.conf` file located in the `c
 - `CustomLogin.BoA` — Give new characters BoA items.
 - `CustomLogin.Skills` — Give new characters additional weapon skills.
 
+#### **Starting Mount**
+
+- `CustomLogin.StartingMount.Enable` — Enable or disable granting a starting mount and riding skill.
+- `CustomLogin.StartingMount.Spell` — Spell ID for the mount to grant (e.g., 458 = Brown Horse).
+- `CustomLogin.StartingMount.Skill` — Spell ID for the riding skill to grant (e.g., 33388 = Apprentice Riding).
+
+#### **Starting Professions**
+
+Automatically teach one or more professions (e.g., First Aid, Cooking, Mining, Herbalism) to new characters on their first login.
+
+- `CustomLogin.StartingProfessions.Enable` — Enable or disable granting starting professions.
+- `CustomLogin.StartingProfessions.List` — Comma-separated list of profession spell IDs to teach (e.g., 129,185,186 for First Aid, Cooking, Mining).
+
+**Example profession spell IDs:**
+
+| Profession     | Spell ID |
+| -------------- | -------- |
+| First Aid      | 129      |
+| Cooking        | 185      |
+| Mining         | 186      |
+| Tailoring      | 197      |
+| Alchemy        | 171      |
+| Herbalism      | 182      |
+| Engineering    | 202      |
+| Enchanting     | 333      |
+| Fishing        | 356      |
+| Skinning       | 393      |
+| Jewelcrafting  | 755      |
+| Blacksmithing  | 164      |
+| Leatherworking | 165      |
+
+Set the spell IDs you want in the config file. Example:
+
+```
+CustomLogin.StartingProfessions.Enable = 1
+CustomLogin.StartingProfessions.List = 129,185,186
+```
+
+#### **Starting Professions**
+
+- `CustomLogin.StartingProfessions.Enable` — Enable or disable granting starting professions.
+- `CustomLogin.StartingProfessions.List` — Comma-separated list of profession spell IDs to teach (e.g., 129,185,186 for First Aid, Cooking, Mining).
+
 #### **Special Abilities**
 
 - `CustomLogin.SpecialAbility` — Enable or disable special abilities.

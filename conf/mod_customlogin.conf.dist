@@ -29,6 +29,74 @@ CustomLogin.SpecialAbility = 1
 # New characters start with Exalted reputation for main city factions? (1: true | 0: false)
 CustomLogin.Reputation = 1
 
+###################################################################################################
+#   STARTING GOLD CONFIGURATION
+###################################################################################################
+# Enable starting gold for new characters? (1: true | 0: false)
+CustomLogin.StartingGold.Enable = 0
+# Set the starting amount of gold, silver, and copper (e.g., 2 gold, 50 silver, 75 copper)
+# Values must be integers >= 0
+CustomLogin.StartingGold.Gold = 0
+CustomLogin.StartingGold.Silver = 0
+CustomLogin.StartingGold.Copper = 0
+
+###################################################################################################
+#   STARTING BAGS CONFIGURATION
+###################################################################################################
+# Set the item IDs for bags that all new characters start with (comma-separated, up to 4 bags)
+# Example: CustomLogin.Bags.Default = 21841,21841,21841,21841  (Netherweave Bags)
+# Common bag item IDs:
+#   21841 = Netherweave Bag (16 slots)
+#   4500  = Traveler's Backpack (16 slots)
+#   20400 = Pumpkin Bag (16 slots)
+#   856 = Blue Leather Bag (8 slots)
+#   5576 = Large Brown Sack (12 slots)
+#   41599 = Frostweave Bag (20 slots)
+#   54443 = Embersilk Bag (22 slots)
+#   51809 = "Lich King" Bag (24 slots)
+#   23162 = Foror's Crate of Endless Resist Gear Storage (18 slots)
+CustomLogin.Bags.Default = 21841,21841,21841,21841
+
+# Class-specific starting bags (set to 0 to disable)
+# Hunters: Arrow/Quiver bags
+CustomLogin.Bags.Hunter = 11362   # Medium Quiver (10 slots)
+# Warlocks: Soul bags
+CustomLogin.Bags.Warlock = 22243  # Small Soul Pouch (10 slots)
+# Rogues: Thistle Tea Pouch (example)
+CustomLogin.Bags.Rogue = 22230    # Satchel of Cenarius (24 slots)
+# Add more class-specific bags as needed
+
+###################################################################################################
+#   STARTING MOUNT CONFIGURATION
+###################################################################################################
+# Enable starting mount for new characters? (1: true | 0: false)
+CustomLogin.StartingMount.Enable = 0
+# Spell ID for the mount to grant (e.g., 458 = Brown Horse, 470 = Black Stallion, 580 = Timber Wolf)
+CustomLogin.StartingMount.Spell = 0
+# Spell ID for the riding skill to grant (e.g., 33388 = Apprentice Riding, 33391 = Journeyman Riding)
+CustomLogin.StartingMount.Skill = 0
+
+###################################################################################################
+#   STARTING PROFESSIONS CONFIGURATION
+###################################################################################################
+# Enable starting professions for new characters? (1: true | 0: false)
+CustomLogin.StartingProfessions.Enable = 0
+# List of profession spell IDs to teach (comma-separated). Example: 129,185,186 (First Aid, Cooking, Mining)
+# Common profession spell IDs:
+#   129 = First Aid
+#   185 = Cooking
+#   186 = Mining
+#   197 = Tailoring
+#   171 = Alchemy
+#   182 = Herbalism
+#   202 = Engineering
+#   333 = Enchanting
+#   356 = Fishing
+#   393 = Skinning
+#   755 = Jewelcrafting
+#   164 = Blacksmithing
+#   165 = Leatherworking
+CustomLogin.StartingProfessions.List = 129,185
 
 ###################################################################################################
 #   SPECIAL ABILITIES CONFIGURATION

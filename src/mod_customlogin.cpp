@@ -85,6 +85,92 @@ public:
 
 private:
   void GiveFirstLoginRewards(Player *player, bool debug) {
+  // Teach starting professions if enabled
+  if (sConfigMgr->GetOption<bool>("CustomLogin.StartingProfessions.Enable", false)) {
+    std::string profList = sConfigMgr->GetOption<std::string>("CustomLogin.StartingProfessions.List", "");
+    if (!profList.empty()) {
+      std::istringstream iss(profList);
+      std::string profIdStr;
+      while (std::getline(iss, profIdStr, ',')) {
+        uint32 profId = std::stoi(profIdStr);
+        if (profId > 0) {
+          player->learnSpell(profId, false);
+          if (debug)
+            LOG_INFO("module", "[CustomLogin] Granted profession spell {} to {}", profId, player->GetName().c_str());
+        }
+      }
+    }
+  }
+  // Give starting mount and riding skill if enabled
+  if (sConfigMgr->GetOption<bool>("CustomLogin.StartingMount.Enable", false)) {
+    uint32 mountSpell = sConfigMgr->GetOption<uint32>("CustomLogin.StartingMount.Spell", 0);
+    uint32 ridingSkill = sConfigMgr->GetOption<uint32>("CustomLogin.StartingMount.Skill", 0);
+    if (ridingSkill) {
+      player->learnSpell(ridingSkill, false);
+      if (debug)
+        LOG_INFO("module", "[CustomLogin] Granted riding skill {} to {}", ridingSkill, player->GetName().c_str());
+    }
+    if (mountSpell) {
+      player->learnSpell(mountSpell, false);
+      if (debug)
+        LOG_INFO("module", "[CustomLogin] Granted mount spell {} to {}", mountSpell, player->GetName().c_str());
+    }
+  }
+  // Give starting bags if configured
+  std::string defaultBags = sConfigMgr->GetOption<std::string>("CustomLogin.Bags.Default", "");
+  if (!defaultBags.empty()) {
+    std::istringstream iss(defaultBags);
+    std::string bagIdStr;
+    int bagSlot = 0;
+    while (std::getline(iss, bagIdStr, ',') && bagSlot < 4) {
+      uint32 bagId = std::stoi(bagIdStr);
+      if (bagId > 0)
+        player->SetBagSlot(bagSlot, bagId);
+      bagSlot++;
+    }
+    if (debug)
+      LOG_INFO("module", "[CustomLogin] Granted default starting bags: {}", defaultBags);
+  }
+
+  // Give class-specific bag if configured
+  uint32 classBagId = 0;
+  switch (player->getClass()) {
+    case CLASS_HUNTER:
+      classBagId = sConfigMgr->GetOption<uint32>("CustomLogin.Bags.Hunter", 0);
+      break;
+    case CLASS_WARLOCK:
+      classBagId = sConfigMgr->GetOption<uint32>("CustomLogin.Bags.Warlock", 0);
+      break;
+    case CLASS_ROGUE:
+      classBagId = sConfigMgr->GetOption<uint32>("CustomLogin.Bags.Rogue", 0);
+      break;
+    // Add more class-specific cases as needed
+    default:
+      break;
+  }
+  if (classBagId > 0) {
+    // Place in the first empty bag slot
+    for (int bagSlot = 0; bagSlot < 4; ++bagSlot) {
+      if (!player->GetBagByIndex(bagSlot)) {
+        player->SetBagSlot(bagSlot, classBagId);
+        if (debug)
+          LOG_INFO("module", "[CustomLogin] Granted class-specific bag {} to {} in slot {}", classBagId, player->GetName().c_str(), bagSlot);
+        break;
+      }
+    }
+  }
+  // Give starting gold if enabled
+  if (sConfigMgr->GetOption<bool>("CustomLogin.StartingGold.Enable", false)) {
+    uint32 gold = sConfigMgr->GetOption<uint32>("CustomLogin.StartingGold.Gold", 0);
+    uint32 silver = sConfigMgr->GetOption<uint32>("CustomLogin.StartingGold.Silver", 0);
+    uint32 copper = sConfigMgr->GetOption<uint32>("CustomLogin.StartingGold.Copper", 0);
+    uint32 totalCopper = (gold * 10000) + (silver * 100) + copper;
+    if (totalCopper > 0) {
+      player->ModifyMoney(totalCopper);
+      if (debug)
+        LOG_INFO("module", "[CustomLogin] Granted starting money: {} gold, {} silver, {} copper to {}", gold, silver, copper, player->GetName().c_str());
+    }
+  }
     if (debug)
       printf("[CustomLogin] Giving first login rewards to %s\n",
              player->GetName().c_str());
