@@ -127,7 +127,7 @@ private:
       if (bagId > 0 && !player->GetItemByPos(INVENTORY_SLOT_BAG_0, slot - 19)) {
         Item* bag = Item::CreateItem(bagId, 1, player);
         if (bag) {
-          player->EquipItem(bag, slot, true);
+          player->EquipItem(slot, bag, true);
         }
       }
       ++slot;
@@ -158,7 +158,7 @@ private:
       if (!player->GetItemByPos(INVENTORY_SLOT_BAG_0, slot - 19)) {
         Item* bag = Item::CreateItem(classBagId, 1, player);
         if (bag) {
-          player->EquipItem(bag, slot, true);
+          player->EquipItem(slot, bag, true);
           if (debug)
             LOG_INFO("module", "[CustomLogin] Granted class-specific bag {} to {} in slot {}", classBagId, player->GetName().c_str(), slot);
         }
