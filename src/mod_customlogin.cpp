@@ -121,17 +121,16 @@ private:
   if (!defaultBags.empty()) {
     std::istringstream iss(defaultBags);
     std::string bagIdStr;
-    int bagSlot = 0;
-    // Bag slots are INVENTORY_SLOT_BAG_0 (19) to INVENTORY_SLOT_BAG_3 (22)
-    for (int slot = 19; slot <= 22 && std::getline(iss, bagIdStr, ','); ++slot) {
+    int slot = 19;
+    while (std::getline(iss, bagIdStr, ',') && slot <= 22) {
       uint32 bagId = std::stoi(bagIdStr);
       if (bagId > 0 && !player->GetItemByPos(INVENTORY_SLOT_BAG_0, slot - 19)) {
-        Item* bag = player->StoreNewItemInBestSlots(bagId, 1);
+        Item* bag = Item::CreateItem(bagId, 1, player);
         if (bag) {
           player->EquipItem(bag, slot, true);
         }
       }
-      bagSlot++;
+      ++slot;
     }
     if (debug)
       LOG_INFO("module", "[CustomLogin] Granted default starting bags: {}", defaultBags);
@@ -157,7 +156,7 @@ private:
     // Place in the first empty bag slot (19-22)
     for (int slot = 19; slot <= 22; ++slot) {
       if (!player->GetItemByPos(INVENTORY_SLOT_BAG_0, slot - 19)) {
-        Item* bag = player->StoreNewItemInBestSlots(classBagId, 1);
+        Item* bag = Item::CreateItem(classBagId, 1, player);
         if (bag) {
           player->EquipItem(bag, slot, true);
           if (debug)
