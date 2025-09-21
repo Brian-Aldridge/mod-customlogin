@@ -1,126 +1,257 @@
 [worldserver]
-
 ###################################################################################################
-#   CUSTOM LOGIN MODULE CONFIGURATION
+# CUSTOM LOGIN MODULE CONFIGURATION
 ###################################################################################################
 
-# Enable the module? (1: true | 0: false)
+###############################################################################################
+###############################################################################################
+# General
+###############################################################################################
+# Purpose: global toggles and diagnostic options for the module.
+# Notes:
+#  - `CustomLogin.Enable` enables/disables the module entirely.
+#  - `CustomLogin.ValidateOnStartup` runs a consolidated scan of configured spell/item IDs and
+#    emits a single warning block to the log (recommended to keep enabled on initial setup).
+#  - `CustomLogin.Debug` enables verbose per-player debug messages (useful when troubleshooting).
+# Examples:
+#   CustomLogin.Enable = 1
+#   CustomLogin.ValidateOnStartup = 1
+#   CustomLogin.Debug = 0
 CustomLogin.Enable = 1
+CustomLogin.ValidateOnStartup = 1
+CustomLogin.Debug = 0
 
-# Announce the module when the player logs in? (1: true | 0: false)
+###############################################################################################
+# Announcements
+###############################################################################################
+###############################################################################################
+# Announcements — quick examples
+###############################################################################################
+# Purpose: control visible messages when players log in (module message and per-player join/leave).
+# Notes:
+#  - `CustomLogin.Announce` controls whether the module sends the configured `AnnounceMessage` to players.
+#  - `CustomLogin.PlayerAnnounce` toggles a short team-colored join/leave message sent only to the player.
+# Examples:
+#  - Enable both messages (default):
+#      CustomLogin.Announce = 1
+#      CustomLogin.PlayerAnnounce = 1
+#  - Use a custom announce message (supports color codes):
+#      CustomLogin.AnnounceMessage = This server is running the |cff4CFF00CustomLogin |rmodule.
 CustomLogin.Announce = 1
-
-# Inform when players enter and exit the game? (1: true | 0: false)
 CustomLogin.PlayerAnnounce = 1
 
-###################################################################################################
-#   FIRST LOGIN REWARDS
-###################################################################################################
+# Custom message shown to players on login (leave blank for default)
+CustomLogin.AnnounceMessage = This server is running the |cff4CFF00CustomLogin |rmodule.
 
-# New characters start with BoA items? (1: true | 0: false)
+###############################################################################################
+# First-login rewards (overview)
+###############################################################################################
+# Purpose: high-level switches that control which reward subsystems run on first login.
+# Notes:
+#  - `CustomLogin.BoA` controls whether class/item-based Bind-on-Account starter items are granted.
+#    When enabled, the per-class `CustomLogin.<Class>.<Slot>` keys are used to add items to the
+#    player's inventory (see "Class item grants" section below).
+#  - `CustomLogin.Skills` enables the Skills subsystem (see the "Skills configuration" section).
+#  - `CustomLogin.SpecialAbility` and `CustomLogin.Reputation` toggle those subsystems (detailed later).
+# Examples (enable common subsystems):
+#   CustomLogin.BoA = 1
+#   CustomLogin.Skills = 1
+#   CustomLogin.SpecialAbility = 1
+#   CustomLogin.Reputation = 1
 CustomLogin.BoA = 1
-
-# New characters start with additional weapon skills? (1: true | 0: false)
 CustomLogin.Skills = 1
 
-# New characters start with special abilities? (1: true | 0: false)
+# Skills configuration — quick examples
+###############################################################################################
+# Purpose: teach extra weapon or ability "learn" spells to new characters on first login.
+# Notes:
+#  - These must be spell IDs that teach a skill or ability (learn-spells). They are NOT raw skill IDs.
+#  - The module will validate spell existence before teaching; invalid IDs are skipped and logged.
+#  - A class-specific key (for example, CustomLogin.Skills.Warrior) overrides the global list for that class.
+#  - Spell lists are comma-separated and may include spaces. Example: 2383, 5011, 676
+#
+# Examples
+# 1) Global list used for every class:
+#    CustomLogin.Skills.List = 2383,5011
+#
+# 2) Class-specific lists (overrides global for that class):
+#    CustomLogin.Skills.Warrior = 676,825
+#    CustomLogin.Skills.Hunter = 9116,20900
+#
+# 3) Mixed usage: global fallback + per-class extras:
+#    CustomLogin.Skills.List = 2383,5011
+#    CustomLogin.Skills.Rogue = 676,1764
+
+# Where to look if spells/items are missing:
+#  - Startup-time consolidated validation (if CustomLogin.ValidateOnStartup = 1)
+#    logs a single warning block like:
+#      [mod_customlogin] Configuration validation found missing entries:
+#      Missing spells: <id1> <id2> ...
+#      Missing items: <id1> <id2> ...
+#  - Per-player debug warnings (when CustomLogin.Debug = 1) use messages such as:
+#      [CustomLogin] Skill/spell <id> not found in Spell store; skipping
+#      [CustomLogin] Invalid skill token '<token>' in config
+#
+# Concrete WotLK examples (verify against your DB):
+#  - Apprentice Riding = 33388
+#  - Journeyman Riding = 33391
+# Example using riding spells (teach mount skills on first login):
+#   CustomLogin.Skills.List = 33388,33391
+
+# Explicit Skills configuration entries (empty by default).
+# These are listed so every config key referenced by the module exists in the
+# distribution file. Fill with comma-separated spell IDs as needed.
+CustomLogin.Skills.List =
+CustomLogin.Skills.Warrior =
+CustomLogin.Skills.Paladin =
+CustomLogin.Skills.Hunter =
+CustomLogin.Skills.Rogue =
+CustomLogin.Skills.Priest =
+CustomLogin.Skills.DeathKnight =
+CustomLogin.Skills.Shaman =
+CustomLogin.Skills.Mage =
+CustomLogin.Skills.Warlock =
+CustomLogin.Skills.Druid =
+
+
+# Grant special abilities (spells/titles/mounts) on first login? (1: true | 0: false)
 CustomLogin.SpecialAbility = 1
 
-# New characters start with Exalted reputation for main city factions? (1: true | 0: false)
+# Set reputations for new characters? (1: true | 0: false)
 CustomLogin.Reputation = 1
 
-###################################################################################################
-#   STARTING GOLD CONFIGURATION
-###################################################################################################
-# Enable starting gold for new characters? (1: true | 0: false)
+###############################################################################################
+# Starting gold
+###############################################################################################
+###############################################################################################
+# StartingGold — quick examples
+###############################################################################################
+# Purpose: give new characters a small starting sum of money (optional).
+# Notes:
+#  - Values are integers and represent whole units (Gold, Silver, Copper).
+#  - The module converts to copper internally: totalCopper = Gold*10000 + Silver*100 + Copper.
+#  - Set Enable to 1 to grant starting money.
+# Examples:
+#   CustomLogin.StartingGold.Enable = 1
+#   CustomLogin.StartingGold.Gold = 2
+#   CustomLogin.StartingGold.Silver = 50
+#   CustomLogin.StartingGold.Copper = 75
 CustomLogin.StartingGold.Enable = 0
-# Set the starting amount of gold, silver, and copper (e.g., 2 gold, 50 silver, 75 copper)
-# Values must be integers >= 0
 CustomLogin.StartingGold.Gold = 0
 CustomLogin.StartingGold.Silver = 0
 CustomLogin.StartingGold.Copper = 0
 
-###################################################################################################
-#   STARTING BAGS CONFIGURATION
-###################################################################################################
-# Set the item IDs for bags that all new characters start with (comma-separated, up to 4 bags)
-# Example: CustomLogin.Bags.Default = 21841,21841,21841,21841  (Netherweave Bags)
-# Common bag item IDs:
-#   21841 = Netherweave Bag (16 slots)
-#   4500  = Traveler's Backpack (16 slots)
-#   20400 = Pumpkin Bag (16 slots)
-#   856 = Blue Leather Bag (8 slots)
-#   5576 = Large Brown Sack (12 slots)
-#   41599 = Frostweave Bag (20 slots)
-#   54443 = Embersilk Bag (22 slots)
-#   51809 = "Lich King" Bag (24 slots)
-#   23162 = Foror's Crate of Endless Resist Gear Storage (18 slots)
+###############################################################################################
+###############################################################################################
+# StartingBags — quick examples
+###############################################################################################
+# Purpose: grant a set of starter bags to new characters and (optionally) a class-specific bag.
+# Notes:
+#  - Up to four default bag item IDs may be provided; they fill bag slots 19–22 in order.
+#  - A non-zero class bag (e.g., CustomLogin.Bags.Hunter) will equip into the first empty slot among 19–22.
+#  - Invalid or DB-missing item IDs are skipped and logged during startup validation or per-player when debug is on.
+#  - Use actual item_template entry IDs from your DB (verify with a SELECT query).
+# Examples:
+#  - Four Netherweave Bags as defaults:
+#      CustomLogin.Bags.Default = 21841,21841,21841,21841
+#  - Give hunters a quiver (class-specific):
+#      CustomLogin.Bags.Hunter = 8217
+#  - Disable class-specific bags by leaving them as 0 (default for WotLK compatibility)
+#
+# WotLK bag quick-reference (examples; verify in DB):
+#   41599 = Frostweave Bag (20)
+#   21841 = Netherweave Bag (16)
+#   4500  = Traveler's Backpack (16)
+#   20400 = Pumpkin Bag (16)
+#   14046 = Runecloth Bag (14)
+#
+# Class-specific examples (verify IDs in your DB):
+#   Hunter quivers: 8217 (Quickdraw Quiver), 8218 (Thick Leather Ammo Pouch)
+#   Warlock soul pouches: 21340, 21341, 21342
 CustomLogin.Bags.Default = 21841,21841,21841,21841
 
-# Class-specific starting bags (set to 0 to disable)
-# Hunters: Arrow/Quiver bags
-CustomLogin.Bags.Hunter = 11362   # Medium Quiver (10 slots)
-# Warlocks: Soul bags
-CustomLogin.Bags.Warlock = 22243  # Small Soul Pouch (10 slots)
-# Rogues: Thistle Tea Pouch (example)
-CustomLogin.Bags.Rogue = 22230    # Satchel of Cenarius (24 slots)
+# Class-specific starting bags (set to 0 to disable). Defaults are 0 (disabled) for WotLK compatibility.
+CustomLogin.Bags.Hunter = 0
+CustomLogin.Bags.Warlock = 0
+CustomLogin.Bags.Rogue = 0
 # Add more class-specific bags as needed
 
-###################################################################################################
-#   STARTING MOUNT CONFIGURATION
-###################################################################################################
-# Enable starting mount for new characters? (1: true | 0: false)
+###############################################################################################
+# Starting mount
+###############################################################################################
+###############################################################################################
+# StartingMount — quick examples
+###############################################################################################
+# Purpose: optionally grant a mount spell and the riding skill on first login.
+# Notes:
+#  - `StartingMount.Spell` should be a mount-summon spell ID present in your Spell DB.
+#  - `StartingMount.Skill` should be the corresponding riding skill spell (e.g., Apprentice/Journeyman Riding).
+#  - The module validates both at startup/per-player; missing IDs are skipped and logged.
+# Examples:
+#   CustomLogin.StartingMount.Enable = 1
+#   CustomLogin.StartingMount.Spell = 458      # example mount spell (verify in DB)
+#   CustomLogin.StartingMount.Skill = 33388    # Apprentice Riding (WotLK example)
 CustomLogin.StartingMount.Enable = 0
-# Spell ID for the mount to grant (e.g., 458 = Brown Horse, 470 = Black Stallion, 580 = Timber Wolf)
 CustomLogin.StartingMount.Spell = 0
-# Spell ID for the riding skill to grant (e.g., 33388 = Apprentice Riding, 33391 = Journeyman Riding)
 CustomLogin.StartingMount.Skill = 0
 
-###################################################################################################
-#   STARTING PROFESSIONS CONFIGURATION
-###################################################################################################
-# Enable starting professions for new characters? (1: true | 0: false)
+###############################################################################################
+# StartingProfessions — quick examples
+###############################################################################################
+# Purpose: teach beginner profession spells on first login (optional).
+# Notes:
+#  - Provide spell IDs that teach the profession (learn-spells), not raw profession IDs.
+#  - The module validates spell existence at startup and per-player; missing IDs are skipped and logged.
+#  - Per-player missing-profession warnings look like:
+#      [CustomLogin] Profession spell <id> not found in Spell store; skipping
+#
+# Examples
+#  - Teach First Aid + Cooking to all new characters:
+#      CustomLogin.StartingProfessions.Enable = 1
+#      CustomLogin.StartingProfessions.List = 129,185
+#  - Use other profession spell IDs as needed (verify in Spell DB)
 CustomLogin.StartingProfessions.Enable = 0
-# List of profession spell IDs to teach (comma-separated). Example: 129,185,186 (First Aid, Cooking, Mining)
-# Common profession spell IDs:
-#   129 = First Aid
-#   185 = Cooking
-#   186 = Mining
-#   197 = Tailoring
-#   171 = Alchemy
-#   182 = Herbalism
-#   202 = Engineering
-#   333 = Enchanting
-#   356 = Fishing
-#   393 = Skinning
-#   755 = Jewelcrafting
-#   164 = Blacksmithing
-#   165 = Leatherworking
 CustomLogin.StartingProfessions.List = 129,185
 
-###################################################################################################
-#   SPECIAL ABILITIES CONFIGURATION
-###################################################################################################
-
+###############################################################################################
+###############################################################################################
+# SpecialAbility — quick examples
+###############################################################################################
+# Purpose: grant one or two special spells, a title, or a mount to new characters.
+# Notes:
+#  - Spell IDs must exist in Spell store; missing entries are skipped and logged when debug is enabled.
+#  - Per-player missing-spell warnings look like:
+#      [CustomLogin] SpecialAbility.Spell1 <id> not found in Spell store; skipping
+#
+# Examples
+#  - Grant a single special spell:
+#      CustomLogin.SpecialAbility = 1
+#      CustomLogin.SpecialAbility.Spell1 = 12345
+#  - Grant a mount spell (verify mount spell ID exists):
+#      CustomLogin.SpecialAbility.Mount = 33388  # e.g., Apprentice Riding (verify in DB)
+#  - Grant a title (use valid CharTitlesEntry ID):
+#      CustomLogin.SpecialAbility.Title = 1
+#
 # Define special abilities granted to new characters (set to 0 to disable)
-
-# Example spell ID
 CustomLogin.SpecialAbility.Spell1 = 12345
-
-# Example spell ID
 CustomLogin.SpecialAbility.Spell2 = 67890
-
-# Example title ID
 CustomLogin.SpecialAbility.Title = 1
-
-# Example mount spell ID
 CustomLogin.SpecialAbility.Mount = 60025
 
-###################################################################################################
-#   ITEM CONFIGURATION PER CLASS
-###################################################################################################
-
-# Define items for each class (set to 0 if no item should be given)
+###############################################################################################
+# Class item grants (Bind-on-Account / starter items)
+###############################################################################################
+# Purpose: give class-appropriate starter items (usually BoA) to new characters.
+# Notes:
+#  - Set an item ID to the `CustomLogin.<Class>.<Slot>` key to grant that item on first login.
+#  - Use 0 to disable a specific item grant.
+#  - Item IDs must exist in your item_template table; missing IDs are reported during startup validation.
+# Examples:
+#  - Grant starter shoulders and chest for a class:
+#      CustomLogin.Warrior.Shoulders = 42949
+#      CustomLogin.Warrior.Chest = 48685
+#  - Leave a slot at 0 to skip it:
+#      CustomLogin.Paladin.Weapon2 = 0
 
 # Warrior
 CustomLogin.Warrior.Shoulders = 42949
@@ -191,13 +322,19 @@ CustomLogin.Druid.Trinket = 42991
 CustomLogin.Druid.Weapon1 = 42944
 CustomLogin.Druid.Weapon2 = 44092
 
-###################################################################################################
-#   REPUTATION CONFIGURATION
-###################################################################################################
-
-# Define reputation levels for each faction (set to 0 to disable)
-# Reputation levels: 0 = Neutral, 3000 = Friendly, 9000 = Honored, 21000 = Revered, 42000 = Exalted
-
+###############################################################################################
+###############################################################################################
+# Reputation configuration — quick examples
+###############################################################################################
+# Purpose: set initial reputation values for selected factions for new characters.
+# Notes:
+#  - Values are faction standing numbers (0 = Neutral, 3000 = Friendly, 9000 = Honored, 21000 = Revered, 42000 = Exalted).
+#  - Set a faction value to 0 to leave it unchanged.
+# Examples:
+#  - Set common city factions to Exalted on first login:
+#      CustomLogin.Reputation.Stormwind = 42000
+#      CustomLogin.Reputation.Orgrimmar = 42000
+#
 # Alliance Factions
 CustomLogin.Reputation.Stormwind = 42000
 CustomLogin.Reputation.Ironforge = 42000
@@ -242,9 +379,3 @@ CustomLogin.Reputation.HordeExpedition = 42000
 CustomLogin.Reputation.AllianceVanguard = 42000
 CustomLogin.Reputation.TheSonsOfHodir = 42000
 CustomLogin.Reputation.TheAshenVerdict = 42000
-
-# Custom message shown to players on login (leave blank for default)
-CustomLogin.AnnounceMessage = This server is running the |cff4CFF00CustomLogin |rmodule.
-
-# Enable debug logging for mod-customlogin (1: true | 0: false)
-CustomLogin.Debug = 0

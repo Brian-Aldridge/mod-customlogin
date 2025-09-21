@@ -10,9 +10,9 @@
 
 ### **Description**
 
-`mod-customlogin` is a highly configurable module for AzerothCore that provides custom login rewards, announcements, and features for new characters. It allows server administrators to customize items, abilities, reputations, and more through a configuration file without modifying the source code.
+`mod-customlogin` is a highly configurable module for AzerothCore that provides custom login rewards, announcements, and features for new characters. It lets server administrators customize items, abilities, reputations, bags, mounts, professions, and more via configuration—no source edits needed.
 
-This module is compatible with Playerbot and other forks that do not expose public session accessors.
+Compatibility: built and tested for AzerothCore WotLK (3.3.5). All default examples use WotLK-valid IDs. Playerbot and forks without public session accessors are supported.
 
 ---
 
@@ -32,6 +32,23 @@ This module is compatible with Playerbot and other forks that do not expose publ
 
 - Grants additional weapon skills to new characters based on their class.
 - Configurable via `CustomLogin.Skills`.
+
+Configuration:
+
+Set `CustomLogin.Skills = 1` to enable. Then either set a global list of spell IDs:
+
+```ini
+CustomLogin.Skills.List = 674,1764
+```
+
+Or class-specific overrides:
+
+```ini
+CustomLogin.Skills.Warrior = 674,1764
+CustomLogin.Skills.Hunter = 674,533
+```
+
+Spell IDs should be the spell/ability IDs to teach the player (the same IDs used in `CustomLogin.SpecialAbility.Spell1`), not internal skill type IDs.
 
 #### **4. Special Abilities**
 
@@ -66,6 +83,24 @@ All options are controlled via the `mod_customlogin.conf` file located in the `c
 - `CustomLogin.BoA` — Give new characters BoA items.
 - `CustomLogin.Skills` — Give new characters additional weapon skills.
 
+#### **Starting Gold**
+
+Automatically grant starting currency to new characters on first login.
+
+- `CustomLogin.StartingGold.Enable` — Enable/disable starting money.
+- `CustomLogin.StartingGold.Gold` — Amount of gold (>= 0).
+- `CustomLogin.StartingGold.Silver` — Amount of silver (>= 0).
+- `CustomLogin.StartingGold.Copper` — Amount of copper (>= 0).
+
+Example:
+
+```ini
+CustomLogin.StartingGold.Enable = 1
+CustomLogin.StartingGold.Gold = 2
+CustomLogin.StartingGold.Silver = 50
+CustomLogin.StartingGold.Copper = 75
+```
+
 #### **Starting Mount**
 
 - `CustomLogin.StartingMount.Enable` — Enable or disable granting a starting mount and riding skill.
@@ -99,15 +134,37 @@ Automatically teach one or more professions (e.g., First Aid, Cooking, Mining, H
 
 Set the spell IDs you want in the config file. Example:
 
-```
+```ini
 CustomLogin.StartingProfessions.Enable = 1
 CustomLogin.StartingProfessions.List = 129,185,186
 ```
 
-#### **Starting Professions**
+#### **Starting Bags**
 
-- `CustomLogin.StartingProfessions.Enable` — Enable or disable granting starting professions.
-- `CustomLogin.StartingProfessions.List` — Comma-separated list of profession spell IDs to teach (e.g., 129,185,186 for First Aid, Cooking, Mining).
+Equip up to four starting bags and optionally one class-specific bag (consumes one of the four slots if enabled).
+
+- `CustomLogin.Bags.Default` — Comma-separated list of up to 4 bag item IDs. These fill bag slots 19–22 in order.
+- Class-specific overrides (set to `0` to disable):
+  - `CustomLogin.Bags.Hunter` — Quiver/Ammo Pouch ID (e.g., 8217, 8218, 7371, 7372)
+  - `CustomLogin.Bags.Warlock` — Shard bag ID (e.g., 21342, 21341, 21340, 22243)
+  - `CustomLogin.Bags.Rogue` — No class bag in WotLK; keep 0
+
+Behavior notes:
+
+- Defaults equip first; any class bag (if non-zero) is placed into the first empty slot among 19–22 and will consume one of the four.
+- Fewer than 4 defaults are fine; remaining slots stay empty unless a class bag is enabled.
+- Invalid/missing IDs are skipped (slot remains empty) and can be taken by a class bag if enabled.
+- Use WotLK 3.3.5 item IDs (e.g., 41599 Frostweave 20-slot, 21841 Netherweave 16-slot). Cataclysm+ bags don’t exist in stock WotLK DBs.
+
+Examples:
+
+```ini
+# Four Netherweave bags
+CustomLogin.Bags.Default = 21841,21841,21841,21841
+
+# Hunters: give a Quickdraw Quiver (14-slot) in the first empty bag slot
+CustomLogin.Bags.Hunter = 8217
+```
 
 #### **Special Abilities**
 
@@ -132,17 +189,24 @@ CustomLogin.StartingProfessions.List = 129,185,186
   - `CustomLogin.Paladin.Chest = 48685`
   - `CustomLogin.Hunter.Weapon1 = 42943`
 
+> Tip: the config file (`conf/mod_customlogin.conf.dist`) includes a quick-reference table of common WotLK bag IDs and class bags, and a reminder to verify against your DB.
+
 ---
 
 ### **Installation**
 
 1. Clone or copy this module into your `modules` directory:
-   ```bash
-   git clone https://github.com/Brian-Aldridge/mod-customlogin.git modules/mod-customlogin
-   ```
-2. Add the config file to your `configs` directory.
-3. Rebuild your AzerothCore server.
-4. Restart your worldserver.
+
+```bash
+git clone https://github.com/Brian-Aldridge/mod-customlogin.git modules/mod-customlogin
+```
+
+1. Copy `conf/mod_customlogin.conf.dist` into your AzerothCore `configs` folder as `mod_customlogin.conf`, then edit to taste.
+1. Rebuild AzerothCore and restart `worldserver`.
+
+Validation tips:
+
+- To verify bag IDs exist in your DB, consult `data/sql/base/db_world/item_template.sql` or query your DB: `SELECT entry, name FROM item_template WHERE entry IN (...);`
 
 ---
 
