@@ -475,16 +475,19 @@ private:
         bagIdStr.erase(0, bagIdStr.find_first_not_of(" \t\n\r"));
         bagIdStr.erase(bagIdStr.find_last_not_of(" \t\n\r") + 1);
         uint32 bagId = 0;
+        bool parsed = true;
         try
         {
           bagId = static_cast<uint32>(std::stoul(bagIdStr));
         }
         catch (...)
         {
+          parsed = false;
           if (debug)
             LOG_WARN("module", "[CustomLogin] Skipping invalid bag ID token '{}' in defaults", bagIdStr);
         }
-        else if (bagId == 0 && debug)
+        // If parsing succeeded but the ID resolved to zero, log an informational message
+        if (parsed && bagId == 0 && debug)
         {
           LOG_INFO("module", "[CustomLogin] Skipping default bag in slot {} due to zero/invalid ID token '{}'", slot, bagIdStr);
         }
